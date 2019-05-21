@@ -6,6 +6,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.test.cache.entity.FlightInfo;
 import com.test.cache.util.CacheFailoverListProvider;
 import com.test.cache.util.CacheFailoverObjectProvider;
+import com.test.cache.util.CacheProvider;
 import com.test.cache.util.CacheThroughUtil;
 import org.apache.commons.lang3.StringUtils;
 
@@ -23,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 public class Main {
 
 
-    private static Cache<String, Integer> integerCache = Caffeine.newBuilder()
+    private static Cache<String, String> stringCache = Caffeine.newBuilder()
             .expireAfterWrite(60, TimeUnit.MINUTES)
             .build();
 
@@ -38,7 +39,19 @@ public class Main {
     private static void testCacheList() {
 
         String key = "list001";
-        StringCacheService stringCacheService = new StringCacheService();
+//        StringCacheService stringCacheService = new StringCacheService();
+
+        CacheProvider<String> stringCacheService = new CacheProvider<String>() {
+            @Override
+            public String get(String key) {
+                return stringCache.asMap().get(key);
+            }
+
+            @Override
+            public void setWithExpire(String key, String value, int expire) {
+                stringCache.asMap().put(key, value);
+            }
+        };
 
         CacheFailoverListProvider<FlightInfo, String> cacheFailoverProvider = new CacheFailoverListProvider<FlightInfo, String>() {
             @Override
