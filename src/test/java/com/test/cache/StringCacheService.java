@@ -2,32 +2,29 @@ package com.test.cache;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.test.cache.entity.FlightInfo;
 import com.test.cache.util.CacheProvider;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
  * — <br>
  *
  * @author: 刘恒 <br>
- * @date: 2019/5/13 <br>
+ * @date: 2019/5/10 <br>
  */
-public class FlightInfosCacheProvider implements CacheProvider<List<FlightInfo>> {
+public class StringCacheService implements CacheProvider<String> {
 
-    private static Cache<String, List<FlightInfo>> stringCache = Caffeine.newBuilder()
+    private static Cache<String, String> stringCache = Caffeine.newBuilder()
             .expireAfterWrite(60, TimeUnit.MINUTES)
             .build();
 
-
     @Override
-    public List<FlightInfo> get(String key) {
+    public String get(String key) {
         return stringCache.asMap().get(key);
     }
 
     @Override
-    public void setWithExpire(String key, List<FlightInfo> value, int expire) {
+    public void set(String key, String value) {
         stringCache.asMap().put(key, value);
     }
 }

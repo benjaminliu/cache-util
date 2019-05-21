@@ -41,8 +41,12 @@ public class CacheThroughUtil {
 
         value = cacheFailoverProvider.returnType2CacheType(res);
 
+        //转换失败,就不保存到缓存中
+        if (value == null)
+            return null;
+
         //保存到缓存中
-        cacheProvider.setWithExpire(key, value, cacheProvider.getExpireSeconds());
+        cacheProvider.set(key, value);
 
         return res;
     }
@@ -76,8 +80,12 @@ public class CacheThroughUtil {
 
         value = cacheFailoverProvider.returnType2CacheType(res);
 
+        //转换失败,就不保存到缓存中
+        if (value == null)
+            return null;
+
         //保存到缓存中
-        cacheProvider.setWithExpire(key, value, cacheProvider.getExpireSeconds());
+        cacheProvider.set(key, value);
 
         return res;
     }

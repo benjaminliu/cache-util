@@ -24,7 +24,7 @@ public class IntegerCacheProvider implements CacheProvider<Integer> {
     }
 
     @Override
-    public void setWithExpire(String key, Integer value, int expire) {
+    public void set(String key, Integer value) {
         stringCache.asMap().put(key, value);
     }
 }

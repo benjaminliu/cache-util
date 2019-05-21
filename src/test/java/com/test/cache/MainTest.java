@@ -8,7 +8,9 @@ import com.test.cache.util.CacheFailoverListProvider;
 import com.test.cache.util.CacheFailoverObjectProvider;
 import com.test.cache.util.CacheProvider;
 import com.test.cache.util.CacheThroughUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.Test;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -21,22 +23,15 @@ import java.util.concurrent.TimeUnit;
  * @author: 刘恒 <br>
  * @date: 2019/5/10 <br>
  */
-public class Main {
-
+@Slf4j
+public class MainTest {
 
     private static Cache<String, String> stringCache = Caffeine.newBuilder()
             .expireAfterWrite(60, TimeUnit.MINUTES)
             .build();
 
-
-    public static void main(String[] args) {
-
-//        testCacheObject();
-
-        testCacheList();
-    }
-
-    private static void testCacheList() {
+    @Test
+    public void testCacheList() {
 
         String key = "list001";
 //        StringCacheService stringCacheService = new StringCacheService();
@@ -48,7 +43,7 @@ public class Main {
             }
 
             @Override
-            public void setWithExpire(String key, String value, int expire) {
+            public void set(String key, String value) {
                 stringCache.asMap().put(key, value);
             }
         };
@@ -91,15 +86,15 @@ public class Main {
 
         List<FlightInfo> list = CacheThroughUtil.getListThroughCache(key, stringCacheService, cacheFailoverProvider);
 
-        if (list == null) {
-
+        if (list != null) {
+            log.info(JSON.toJSONString(list));
         }
 
 
         List<FlightInfo> list1 = CacheThroughUtil.getListThroughCache(key, stringCacheService, cacheFailoverProvider);
 
-        if (list1 == null) {
-
+        if (list1 != null) {
+            log.info(JSON.toJSONString(list));
         }
 
 
@@ -130,19 +125,20 @@ public class Main {
 
         List<FlightInfo> list3 = CacheThroughUtil.getListThroughCache(key3, stringFlightInfosCacheProvider, cacheFailoverListProvider);
 
-        if (list3 == null) {
-
+        if (list3 != null) {
+            log.info(JSON.toJSONString(list));
         }
 
 
         List<FlightInfo> list32 = CacheThroughUtil.getListThroughCache(key3, stringFlightInfosCacheProvider, cacheFailoverListProvider);
 
-        if (list32 == null) {
-
+        if (list32 != null) {
+            log.info(JSON.toJSONString(list));
         }
     }
 
-    private static void testCacheObject() {
+    @Test
+    public void testCacheObject() {
         String key = "asdf001";
 
         StringCacheService stringCacheService = new StringCacheService();
@@ -157,11 +153,11 @@ public class Main {
 
         String value = CacheThroughUtil.getObjectThroughCache(key, stringCacheService, cacheFailoverObjectProvider);
 
-        System.out.println(value);
+        log.info(value);
 
         String value1 = CacheThroughUtil.getObjectThroughCache(key, stringCacheService, cacheFailoverObjectProvider);
 
-        System.out.println(value1);
+        log.info(value1);
 
 
         IntegerCacheProvider stringIntegerCacheProvider = new IntegerCacheProvider();
@@ -186,10 +182,10 @@ public class Main {
         String key1 = "asdf002";
         String value11 = CacheThroughUtil.getObjectThroughCache(key1, stringIntegerCacheProvider, cacheFailoverObjectProvider1);
 
-        System.out.println(value11);
+        log.info(value11);
 
         String value12 = CacheThroughUtil.getObjectThroughCache(key1, stringIntegerCacheProvider, cacheFailoverObjectProvider1);
-        System.out.println(value12);
+        log.info(value12);
 
         CacheFailoverObjectProvider<Integer, String> cacheFailoverObjectProvider2 = new CacheFailoverObjectProvider<Integer, String>() {
             @Override
@@ -212,10 +208,10 @@ public class Main {
         String key2 = "asdf003";
         Integer value21 = CacheThroughUtil.getObjectThroughCache(key2, stringCacheService, cacheFailoverObjectProvider2);
 
-        System.out.println(value21);
+        log.info("{}", value21);
 
         Integer value22 = CacheThroughUtil.getObjectThroughCache(key2, stringCacheService, cacheFailoverObjectProvider2);
 
-        System.out.println(value22);
+        log.info("{}", value22);
     }
 }
